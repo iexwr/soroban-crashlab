@@ -9,8 +9,10 @@ pub mod regression_group;
 pub mod fixture;
 pub mod fixture_classifier;
 pub mod suite_runner;
+pub mod runner;
 
 pub use auth_matrix::{
+
     AuthMode, MatrixReport, ModeResult, collect_mismatched, format_mismatch_summary, run_matrix,
     run_matrix_for_seeds,
 };
