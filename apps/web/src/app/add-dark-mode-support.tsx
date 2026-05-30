@@ -125,8 +125,22 @@ const INITIAL_THEME_SCRIPT = `
       var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       var isDark = saved === 'true' || (saved !== 'false' && prefersDark);
       var root = document.documentElement;
+
+      var setThemeVariables = function (dark) {
+        if (dark) {
+          root.style.setProperty('--background', '#0a0a0a');
+          root.style.setProperty('--foreground', '#ededed');
+          root.style.setProperty('--header-border-color', 'rgba(255,255,255,0.145)');
+        } else {
+          root.style.setProperty('--background', '#ffffff');
+          root.style.setProperty('--foreground', '#171717');
+          root.style.setProperty('--header-border-color', 'rgba(0,0,0,0.08)');
+        }
+      };
+
       root.classList.toggle('dark', isDark);
       root.style.colorScheme = isDark ? 'dark' : 'light';
+      setThemeVariables(isDark);
       if (document.body) {
         document.body.classList.toggle('dark', isDark);
       }
