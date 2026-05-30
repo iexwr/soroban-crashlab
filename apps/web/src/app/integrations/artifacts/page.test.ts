@@ -3,11 +3,20 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 const appRoot = path.resolve(__dirname);
-const componentPath = path.resolve(appRoot, 'page.tsx');
+const candidateComponentPaths = [
+  path.resolve(appRoot, 'page.tsx'),
+  path.resolve(process.cwd(), 'src/app/integrations/artifacts/page.tsx'),
+];
+
+const componentPath = candidateComponentPaths.find((candidatePath) =>
+  fs.existsSync(candidatePath),
+);
 
 const runAssertions = (): void => {
-  if (!fs.existsSync(componentPath)) {
-    throw new Error(`Component file not found at: ${componentPath}`);
+  if (!componentPath) {
+    throw new Error(
+      `Component file not found. Checked: ${candidateComponentPaths.join(', ')}`,
+    );
   }
 
   const content = fs.readFileSync(componentPath, 'utf-8');
