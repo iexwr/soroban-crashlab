@@ -28,6 +28,59 @@ const INTEGRATIONS: Integration[] = [
     category: 'Storage'
   },
   {
+    id: 'replay-e2e',
+    title: 'Replay E2E Tests',
+    description: 'Validate that persisted crash seeds replay deterministically and produce matching signatures end-to-end.',
+    icon: (
+      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    href: '/integrations/replay-e2e',
+    status: 'available',
+    category: 'Testing'
+  },
+  {
+    id: 'sanity-check',
+    title: 'Sanity Check Pipeline',
+    description: 'Automated validation of Soroban contracts, environment, dependencies, and configuration before fuzzing runs.',
+    icon: (
+      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    href: '/integrations/sanity-check',
+    status: 'available',
+    category: 'Validation'
+  },
+  {
+    id: 'api-errors',
+    title: 'API Error Report',
+    description: 'Visualize recurring API errors detected during fuzzing runs with counts, filtering, and affected run details.',
+    icon: (
+      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+      </svg>
+    ),
+    href: '/integrations/api-errors',
+    status: 'available',
+    category: 'Observability'
+  },
+  {
+    id: 'issue-links',
+    title: 'Run Issue Link Creator',
+    description: 'Link fuzzing runs to external issue trackers like GitHub, Jira, and Linear for streamlined triage workflows.',
+    icon: (
+      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+      </svg>
+    ),
+    href: '/integrations/issue-links',
+    status: 'available',
+    category: 'Triage'
+  },
+  {
     id: 'webhooks',
     title: 'Webhook Manager',
     description: 'Configure external endpoints to receive real-time notifications for fuzzing run lifecycle events.',
