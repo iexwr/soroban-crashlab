@@ -113,6 +113,24 @@ export default function ExternalAuthenticationIntegration() {
     const provider = providers.find((p) => p.id === id);
     if (!provider) return;
 
+    if (provider.type === 'oauth') {
+      const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
+
+      if (clientId) {
+        const state = Math.random().toString(36).slice(2);
+        const redirectUri = `${window.location.origin}/api/auth/github/callback`;
+        const params = new URLSearchParams({
+          client_id: clientId,
+          redirect_uri: redirectUri,
+          scope: 'read:user',
+          state,
+        });
+
+        window.location.href = `https://github.com/login/oauth/authorize?${params.toString()}`;
+        return;
+      }
+    }
+
     setProviders((prev) =>
       prev.map((p) => (p.id === id ? { ...p, status: 'connecting', errorMessage: undefined } : p))
     );
