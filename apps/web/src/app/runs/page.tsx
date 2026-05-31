@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import RunHistoryTable from '../implement-run-history-table-component';
+import VirtualizedRunTable from '../implement-virtualized-run-table-component';
 import RunHistoryTableSkeleton from '../RunHistoryTableSkeleton';
 import Pagination from '../Pagination';
 import BulkActionsForRuns, { BulkAction } from '../add-bulk-actions-for-runs';
@@ -48,6 +49,9 @@ export default function RunsPage() {
   const totalPages = Math.max(1, Math.ceil(runs.length / ITEMS_PER_PAGE));
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedRuns = runs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const VIRTUALIZATION_THRESHOLD = 100;
+  const shouldVirtualize = runs.length >= VIRTUALIZATION_THRESHOLD;
 
   const selectedRuns = useMemo(
     () => runs.filter((run) => selectedRunIds.has(run.id)),
@@ -158,19 +162,32 @@ export default function RunsPage() {
               onClearSelection={() => setSelectedRunIds(new Set())}
             />
           </div>
-          <RunHistoryTable
-            runs={paginatedRuns}
-            onSelectRun={() => {}}
-            onViewReport={() => {}}
-            selectedRunIds={selectedRunIds}
-            onToggleRunSelection={handleToggleRunSelection}
-            onToggleAllRunsSelection={handleToggleAllRunsSelection}
-          />
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+          {shouldVirtualize ? (
+            <VirtualizedRunTable
+              runs={runs}
+              onSelectRun={() => {}}
+              onViewReport={() => {}}
+              selectedRunIds={selectedRunIds}
+              onToggleRunSelection={handleToggleRunSelection}
+              onToggleAllRunsSelection={handleToggleAllRunsSelection}
+            />
+          ) : (
+            <>
+              <RunHistoryTable
+                runs={paginatedRuns}
+                onSelectRun={() => {}}
+                onViewReport={() => {}}
+                selectedRunIds={selectedRunIds}
+                onToggleRunSelection={handleToggleRunSelection}
+                onToggleAllRunsSelection={handleToggleAllRunsSelection}
+              />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
+          )}
         </>
       )}
     </div>
