@@ -168,7 +168,7 @@ function IssueBadge({ issue }: { issue: RunIssueLink }) {
       href={issue.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors truncate max-w-[180px]"
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors truncate max-w-[120px] sm:max-w-[180px]"
       title={issue.label}
     >
       <svg

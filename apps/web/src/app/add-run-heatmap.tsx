@@ -117,7 +117,7 @@ export default function RunHeatmap({
       </div>
 
       {stats && (
-        <div className="mb-6 grid grid-cols-3 gap-3">
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 bg-zinc-50 dark:bg-zinc-900/50">
             <p className="text-xs text-zinc-500 dark:text-zinc-400">Min</p>
             <p className="text-sm font-mono font-semibold text-zinc-900 dark:text-zinc-100">
@@ -171,7 +171,7 @@ export default function RunHeatmap({
         <h4 className="text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-3 uppercase tracking-wider">
           Severity Legend
         </h4>
-        <div className="grid grid-cols-4 gap-2 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
           {(['low', 'medium', 'high', 'critical'] as RunSeverity[]).map((severity) => (
             <div key={severity} className="flex items-center gap-2">
               <div

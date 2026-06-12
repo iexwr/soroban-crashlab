@@ -976,7 +976,7 @@ const MetricsVisualization: React.FC<{ clusters: RunCluster[] }> = ({
                     {cluster.runs.length} runs
                   </span>
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                   <div>
                     <div className="text-zinc-500 dark:text-zinc-400">
                       Duration

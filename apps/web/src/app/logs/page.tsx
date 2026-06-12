@@ -226,13 +226,13 @@ export default function LogViewerPage() {
               aria-live="polite"
               className="overflow-x-auto"
             >
-              <table className="w-full text-sm font-mono">
+              <table className="w-full text-xs sm:text-sm font-mono">
                 <thead className="bg-zinc-100 dark:bg-zinc-900 text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
                   <tr>
-                    <th scope="col" className="px-4 py-2 text-left font-semibold w-52">Timestamp</th>
-                    <th scope="col" className="px-4 py-2 text-left font-semibold w-20">Level</th>
-                    <th scope="col" className="px-4 py-2 text-left font-semibold w-32">Source</th>
-                    <th scope="col" className="px-4 py-2 text-left font-semibold">Message</th>
+                    <th scope="col" className="px-2 sm:px-4 py-2 text-left font-semibold w-24 sm:w-52">Timestamp</th>
+                    <th scope="col" className="px-2 sm:px-4 py-2 text-left font-semibold w-14 sm:w-20">Level</th>
+                    <th scope="col" className="hidden sm:table-cell px-4 py-2 text-left font-semibold w-32">Source</th>
+                    <th scope="col" className="px-2 sm:px-4 py-2 text-left font-semibold">Message</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800 bg-white dark:bg-zinc-950">
@@ -242,7 +242,7 @@ export default function LogViewerPage() {
                       id={logEntryAnchorId(entry)}
                       className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors"
                     >
-                      <td className="px-4 py-2 text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+                      <td className="px-2 sm:px-4 py-1.5 sm:py-2 text-zinc-500 dark:text-zinc-400 whitespace-nowrap text-[10px] sm:text-xs">
                         <a
                           href={logEntryAnchorHref(entry)}
                           className="hover:text-indigo-600 dark:hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded"
@@ -251,15 +251,15 @@ export default function LogViewerPage() {
                           {formatTimestamp(entry.timestamp)}
                         </a>
                       </td>
-                      <td className="px-4 py-2">
-                        <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border ${LEVEL_BADGE[entry.level]}`}>
+                      <td className="px-2 sm:px-4 py-1.5 sm:py-2">
+                        <span className={`text-[9px] sm:text-[10px] uppercase font-bold px-1 sm:px-1.5 py-0.5 rounded border ${LEVEL_BADGE[entry.level]}`}>
                           {entry.level}
                         </span>
                       </td>
-                      <td className="px-4 py-2 text-cyan-700 dark:text-cyan-400 whitespace-nowrap">
+                      <td className="hidden sm:table-cell px-4 py-2 text-cyan-700 dark:text-cyan-400 whitespace-nowrap text-xs">
                         {entry.source}
                       </td>
-                      <td className="px-4 py-2 text-zinc-800 dark:text-zinc-200 break-all">
+                      <td className="px-2 sm:px-4 py-1.5 sm:py-2 text-zinc-800 dark:text-zinc-200 break-all text-[11px] sm:text-sm">
                         {entry.message}
                       </td>
                     </tr>

@@ -36,30 +36,30 @@ export default function RunsPage() {
   const paginatedRuns = runs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-    <div className="container-full px-6 py-6 fade-in">
-      <div className="flex items-center justify-between mb-6">
+    <div className="container-full page-padding fade-in">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <div>
           <h1 className="heading-page">Fuzzing Runs</h1>
-          <p className="text-meta mt-1">All fuzzing campaigns and their execution results</p>
+          <p className="text-meta mt-0.5 sm:mt-1">All fuzzing campaigns and their execution results</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {dataState === 'success' && (
-            <span className="chip">{runs.length} Total Runs</span>
+            <span className="chip text-xs sm:text-sm">{runs.length} Runs</span>
           )}
-          <Link href="/" className="btn-outline text-sm">Dashboard</Link>
+          <Link href="/" className="btn-outline text-xs sm:text-sm px-3 sm:px-6 h-8 sm:h-10">Dashboard</Link>
         </div>
       </div>
 
       {dataState === 'loading' && (
         <div className="card card-padding">
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="skeleton h-4 w-20" />
-                <div className="skeleton h-4 w-16" />
-                <div className="skeleton h-4 w-12" />
-                <div className="skeleton h-4 w-16" />
-                <div className="skeleton h-4 w-24" />
+              <div key={i} className="flex gap-2 sm:gap-4">
+                <div className="skeleton h-4 w-16 sm:w-20" />
+                <div className="skeleton h-4 w-12 sm:w-16" />
+                <div className="skeleton h-4 w-10 sm:w-12" />
+                <div className="skeleton h-4 w-12 sm:w-16" />
+                <div className="skeleton h-4 w-16 sm:w-24" />
               </div>
             ))}
           </div>
@@ -67,44 +67,44 @@ export default function RunsPage() {
       )}
 
       {dataState === 'error' && (
-        <div className="card card-padding text-center py-12" style={{ borderLeft: '4px solid #CC1016' }}>
-          <span className="text-3xl mb-3 block">⚠</span>
+        <div className="card card-padding text-center py-8 sm:py-12" style={{ borderLeft: '4px solid #CC1016' }}>
+          <span className="text-2xl sm:text-3xl mb-2 sm:mb-3 block">⚠</span>
           <p className="font-semibold" style={{ color: '#CC1016' }}>Failed to load fuzzing runs</p>
-          <p className="text-meta mt-1 mb-4">Check your connection and try again.</p>
-          <button onClick={() => window.location.reload()} className="btn-primary text-sm">
+          <p className="text-meta mt-1 mb-3 sm:mb-4">Check your connection and try again.</p>
+          <button onClick={() => window.location.reload()} className="btn-primary text-xs sm:text-sm">
             Retry
           </button>
         </div>
       )}
 
       {dataState === 'success' && (
-        <div className="card overflow-hidden">
-          <table className="data-table">
+        <div className="card table-responsive">
+          <table className="data-table min-w-[600px] sm:min-w-full">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Status</th>
-                <th>Area</th>
-                <th>Severity</th>
-                <th>Duration</th>
-                <th>Seeds</th>
+                <th className="hidden sm:table-cell">Area</th>
+                <th className="hidden sm:table-cell">Severity</th>
+                <th className="hidden md:table-cell">Duration</th>
+                <th className="hidden md:table-cell">Seeds</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {paginatedRuns.map((run) => (
                 <tr key={run.id}>
-                  <td className="code-text" style={{ color: '#666666' }}>{run.id}</td>
+                  <td className="code-text text-meta" style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{run.id}</td>
                   <td><span className={`badge badge-${run.status}`}>{run.status}</span></td>
-                  <td>{run.area}</td>
-                  <td style={{ color: run.severity === 'critical' ? '#C37D16' : run.severity === 'high' ? '#CC1016' : '#191919' }}>
+                  <td className="hidden sm:table-cell">{run.area}</td>
+                  <td className="hidden sm:table-cell" style={{ color: run.severity === 'critical' ? '#C37D16' : run.severity === 'high' ? '#CC1016' : 'var(--text-primary)' }}>
                     {run.severity}
                   </td>
-                  <td className="text-meta">{run.duration.toLocaleString()}ms</td>
-                  <td className="text-meta">{run.seedCount.toLocaleString()}</td>
+                  <td className="hidden md:table-cell text-meta">{run.duration.toLocaleString()}ms</td>
+                  <td className="hidden md:table-cell text-meta">{run.seedCount.toLocaleString()}</td>
                   <td>
-                    <Link href={`/runs/${run.id}`} className="link text-sm">
-                      View Details →
+                    <Link href={`/runs/${run.id}`} className="link text-xs sm:text-sm whitespace-nowrap">
+                      View <span className="hidden sm:inline">Details</span> →
                     </Link>
                   </td>
                 </tr>
@@ -115,24 +115,24 @@ export default function RunsPage() {
       )}
 
       {dataState === 'success' && totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4">
-          <span className="text-meta">Page {currentPage} of {totalPages}</span>
+        <div className="flex flex-col sm:flex-row items-center justify-between mt-4 gap-3">
+          <span className="text-meta text-xs sm:text-sm">Page {currentPage} of {totalPages}</span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="btn-outline text-sm"
-              style={{ padding: '0 16px', height: '36px', fontSize: '14px', opacity: currentPage === 1 ? 0.4 : 1 }}
+              className="btn-outline text-xs sm:text-sm"
+              style={{ padding: '0 12px sm:0 16px', height: '32px sm:36px', fontSize: '13px sm:14px', opacity: currentPage === 1 ? 0.4 : 1 }}
             >
-              Previous
+              ← Prev
             </button>
             <button
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="btn-outline text-sm"
-              style={{ padding: '0 16px', height: '36px', fontSize: '14px', opacity: currentPage === totalPages ? 0.4 : 1 }}
+              className="btn-outline text-xs sm:text-sm"
+              style={{ padding: '0 12px sm:0 16px', height: '32px sm:36px', fontSize: '13px sm:14px', opacity: currentPage === totalPages ? 0.4 : 1 }}
             >
-              Next
+              Next →
             </button>
           </div>
         </div>

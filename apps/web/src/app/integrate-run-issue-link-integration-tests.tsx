@@ -300,7 +300,7 @@ export default function IntegrateRunIssueLinkIntegrationTests() {
             </div>
 
             {/* Test Summary */}
-            <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
               <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-center">
                 <div className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
                   {testsTotal}

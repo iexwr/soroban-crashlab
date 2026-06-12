@@ -156,7 +156,7 @@ const RunIssueLinkPage: React.FC<RunIssueLinkPageProps> = ({
           {selectedRun && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="text-sm font-semibold text-gray-900 mb-2">Run Details</h4>
-              <dl className="grid grid-cols-2 gap-2 text-sm">
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                 <div>
                   <dt className="text-gray-600">ID:</dt>
                   <dd className="font-medium">{selectedRun.id}</dd>

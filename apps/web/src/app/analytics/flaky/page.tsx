@@ -66,7 +66,7 @@ export default function FlakyAnalyticsPage() {
           </p>
         </div>
 
-        <section className="mb-6 grid gap-3 md:grid-cols-4">
+        <section className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <MetricPanel
             label="Flaky rate"
             value={`${summary.flakyRate.toFixed(1)}%`}
