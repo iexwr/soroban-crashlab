@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "../components/ThemeProvider";
 import NavBar from "../components/NavBar";
 
 export const metadata: Metadata = {
@@ -19,17 +20,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            try {
+              var t = localStorage.getItem('crashlab:theme');
+              var d = t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches);
+              document.documentElement.classList.toggle('dark', d);
+            } catch(e) {}
+          `
+        }} />
       </head>
       <body className="antialiased min-h-screen">
-        <NavBar />
-        <main className="min-h-screen" style={{ background: '#F4F2EE', paddingTop: '52px' }}>
-          {children}
-        </main>
+        <ThemeProvider>
+          <NavBar />
+          <main style={{ background: 'var(--bg)', paddingTop: '52px', minHeight: '100vh', transition: 'background 0.3s ease' }}>
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

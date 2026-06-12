@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import os from 'node:os';
 
 export interface ArtifactMetadata {
   id: string;
@@ -9,11 +10,7 @@ export interface ArtifactMetadata {
 }
 
 function getArtifactDir(): string {
-  const dir = process.env.CRASHLAB_ARTIFACT_DIR;
-  if (!dir) {
-    throw new Error('CRASHLAB_ARTIFACT_DIR environment variable is not set');
-  }
-  return dir;
+  return process.env.CRASHLAB_ARTIFACT_DIR || path.join(os.tmpdir(), 'crashlab-artifacts');
 }
 
 function sanitizeId(id: string): string {

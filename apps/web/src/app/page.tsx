@@ -58,7 +58,7 @@ function DashboardContent() {
             <span className="text-lg">⚠</span>
             <div>
               <p className="font-semibold" style={{ color: '#CC1016' }}>Connection Error</p>
-              <p className="text-meta">Could not reach the backend API. Showing available data.</p>
+              <p className="text-meta">Could not reach the backend API.</p>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ function DashboardContent() {
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         {[
-          { label: 'Total Runs', value: dataState === "loading" ? '...' : totalRuns, color: '#191919' },
+          { label: 'Total Runs', value: dataState === "loading" ? '...' : totalRuns, color: 'var(--text-primary)' },
           { label: 'Running', value: dataState === "loading" ? '...' : runningRuns, color: '#0A66C2' },
           { label: 'Completed', value: dataState === "loading" ? '...' : completedRuns, color: '#057642' },
           { label: 'Failed', value: dataState === "loading" ? '...' : failedRuns, color: '#CC1016' },
@@ -82,8 +82,8 @@ function DashboardContent() {
       {dataState === "loading" && (
         <div className="card card-padding flex items-center justify-center py-12">
           <div className="flex items-center gap-3">
-            <div className="w-5 h-5 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#0A66C2', borderTopColor: 'transparent' }} />
-            <span style={{ color: '#666666' }}>Loading data...</span>
+          <div className="w-5 h-5 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#0A66C2', borderTopColor: 'transparent' }} />
+          <span className="text-meta">Loading data...</span>
           </div>
         </div>
       )}
@@ -110,10 +110,10 @@ function DashboardContent() {
                 <tbody>
                   {recentRuns.map((run) => (
                     <tr key={run.id}>
-                      <td className="code-text" style={{ color: '#666666' }}>{run.id}</td>
+                      <td className="code-text text-meta">{run.id}</td>
                       <td><span className={`badge badge-${run.status}`}>{run.status}</span></td>
                       <td>{run.area}</td>
-                      <td style={{ color: run.severity === 'critical' ? '#C37D16' : '#191919' }}>{run.severity}</td>
+                      <td style={{ color: run.severity === 'critical' ? '#C37D16' : 'var(--text-primary)' }}>{run.severity}</td>
                       <td className="text-meta">{run.duration.toLocaleString()}ms</td>
                       <td><Link href={`/runs/${run.id}`} className="link text-sm">View</Link></td>
                     </tr>
@@ -125,7 +125,7 @@ function DashboardContent() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 section">
             <div className="card card-padding">
-              <h3 className="font-semibold text-sm mb-4" style={{ color: '#666666' }}>Quick Actions</h3>
+              <h3 className="font-semibold text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>Quick Actions</h3>
               <div className="flex flex-col gap-2">
                 {[
                   { href: '/runs', label: 'Browse all runs' },
@@ -135,13 +135,13 @@ function DashboardContent() {
                 ].map((action) => (
                   <Link key={action.href} href={action.href} className="btn-ghost justify-between text-sm rounded-lg" style={{ height: 'auto', padding: '10px 12px' }}>
                     <span>{action.label}</span>
-                    <span style={{ color: '#666666' }}>→</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>→</span>
                   </Link>
                 ))}
               </div>
             </div>
             <div className="card card-padding">
-              <h3 className="font-semibold text-sm mb-4" style={{ color: '#666666' }}>System Status</h3>
+              <h3 className="font-semibold text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>System Status</h3>
               <div className="space-y-3">
                 {[
                   { label: 'Backend Status', value: dataState === "success" ? 'Online' : 'Offline', color: dataState === "success" ? '#057642' : '#CC1016' },
@@ -151,7 +151,7 @@ function DashboardContent() {
                 ].map((info) => (
                   <div key={info.label} className="flex justify-between items-center py-1">
                     <span className="text-meta">{info.label}</span>
-                    <span className="text-sm font-medium" style={{ color: info.color || '#191919' }}>{info.value}</span>
+                    <span className="text-sm font-medium" style={{ color: info.color || 'var(--text-primary)' }}>{info.value}</span>
                   </div>
                 ))}
               </div>
@@ -169,7 +169,7 @@ export default function Home() {
       <div className="container-full px-6 py-6 flex items-center justify-center min-h-[50vh]">
         <div className="flex items-center gap-3">
           <div className="w-5 h-5 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#0A66C2', borderTopColor: 'transparent' }} />
-          <span style={{ color: '#666666' }}>Loading...</span>
+          <span className="text-meta">Loading...</span>
         </div>
       </div>
     }>
