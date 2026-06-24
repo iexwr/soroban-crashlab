@@ -1,81 +1,53 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { LedgerStateChange } from '../../types';
-import { buildMockRuns } from '../../mockRuns';
-import RunIssueLinkPage53 from '../../add-run-issue-link-page-53';
-import RunStatusTimeline from '../../RunStatusTimeline';
-import DownloadArtifactsButton from './DownloadArtifactsButton';
+import type { FuzzingRun, LedgerStateChange } from '../../types';
+import RunTimeline from './RunTimeline';
+
+interface RunDetail extends FuzzingRun {
+    ledgerChanges?: LedgerStateChange[];
+}
 
 interface RunDetailPageProps {
     params: Promise<{ id: string }>;
 }
 
-const ledgerChanges: LedgerStateChange[] = [
-    {
-        id: 'entry-1',
-        entryType: 'ContractData',
-        changeType: 'created',
-        after: '{"key":"allowance:alice:bob","value":"1000"}',
-    },
-    {
-        id: 'entry-2',
-        entryType: 'Account',
-        changeType: 'updated',
-        before: '{"balance":"10000000","seq":"184"}',
-        after: '{"balance":"9800000","seq":"185"}',
-    },
-    {
-        id: 'entry-3',
-        entryType: 'TrustLine',
-        changeType: 'deleted',
-        before: '{"asset":"USDC","limit":"500","balance":"0"}',
-    },
-];
+const formatDate = (value?: string): string => value ? new Date(value).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }) : 'Pending';
 
-const changeBadge = {
-    created: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-900/60',
-    updated: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-900/60',
-    deleted: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-900/60',
-};
-
-const formatBytes = (bytes: number): string => `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-const formatDate = (value?: string): string => (value ? new Date(value).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }) : 'Pending');
+async function fetchRun(id: string): Promise<RunDetail | null> {
+    const base = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+    const res = await fetch(`${base}/api/runs/${encodeURIComponent(id)}`, { cache: 'no-store' });
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`Failed to fetch run ${id}`);
+    return res.json() as Promise<RunDetail>;
+}
 
 export default async function RunDetailPage({ params }: RunDetailPageProps) {
     const { id } = await params;
-    const run = buildMockRuns().find((entry) => entry.id === id);
+    const run = await fetchRun(id);
 
-    if (!run) {
-        notFound();
-    }
+    if (!run) notFound();
 
-    const cpuWarn = run.cpuInstructions >= 900_000;
-    const memoryWarn = run.memoryBytes >= 7_000_000;
-    const feeWarn = run.minResourceFee >= 3_000;
+    const ledgerChanges = run.ledgerChanges ?? [];
 
     return (
-        <div className="px-6 md:px-8 max-w-5xl mx-auto w-full py-14">
-            <div className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl p-6 md:p-8">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+        <div className="container-full px-6 py-6 fade-in">
+            <div className="card card-padding">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                     <div>
-                        <h1 className="text-3xl font-bold mb-2">Run Details</h1>
-                        <p className="text-zinc-500 dark:text-zinc-400 font-mono bg-zinc-100 dark:bg-zinc-800 py-2 px-3 rounded-lg inline-block">
-                            ID: {run.id}
-                        </p>
+                        <div className="flex items-center gap-3 mb-2">
+                            <Link href="/runs" className="link text-sm">← Back to Runs</Link>
+                        </div>
+                        <h1 className="heading-page">Run Details</h1>
+                        <p className="code-text mt-1" style={{ color: '#666666' }}>ID: {run.id}</p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                        <DownloadArtifactsButton run={run} ledgerChanges={ledgerChanges} />
-                        <Link
-                            href="/"
-                            className="inline-flex items-center justify-center h-10 px-4 rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition"
-                        >
-                            Back to Dashboard
-                        </Link>
+                    <div className="flex items-center gap-2">
+                        <span className={`badge badge-${run.status}`}>{run.status}</span>
+                        <Link href="/" className="btn-outline text-sm">Dashboard</Link>
                     </div>
                 </div>
 
-                <div className="mb-8">
-                    <RunStatusTimeline
+                <div className="mb-6">
+                    <RunTimeline
                         status={run.status}
                         queuedAt={formatDate(run.queuedAt)}
                         startedAt={formatDate(run.startedAt)}
@@ -83,77 +55,52 @@ export default async function RunDetailPage({ params }: RunDetailPageProps) {
                     />
                 </div>
 
-                <RunIssueLinkPage53 issues={run.associatedIssues ?? []} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                    {[
+                        { label: 'CPU Instructions', value: run.cpuInstructions.toLocaleString(), warn: run.cpuInstructions >= 900_000 },
+                        { label: 'Memory', value: `${(run.memoryBytes / (1024 * 1024)).toFixed(1)} MB`, warn: run.memoryBytes >= 7_000_000 },
+                        { label: 'Min Resource Fee', value: `${run.minResourceFee.toLocaleString()} stroops`, warn: run.minResourceFee >= 3_000 },
+                    ].map((metric) => (
+                        <div key={metric.label} className={`card card-padding ${metric.warn ? '' : ''}`} style={metric.warn ? { borderLeft: '4px solid #C37D16' } : {}}>
+                            <div className="text-meta text-sm">{metric.label}</div>
+                            <div className="font-semibold text-lg mt-1">{metric.value}</div>
+                            {metric.warn && <div className="text-xs mt-1" style={{ color: '#C37D16' }}>Above threshold</div>}
+                        </div>
+                    ))}
+                </div>
 
-                <section className="mb-8 border border-amber-200 dark:border-amber-900/50 rounded-xl p-4 bg-amber-50/60 dark:bg-amber-950/20">
-                    <h2 className="text-lg font-semibold mb-3">Resource Fee Insight</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                        <div className={`rounded-lg border p-3 ${cpuWarn ? 'border-amber-300 dark:border-amber-800 bg-amber-100/70 dark:bg-amber-900/20' : 'border-zinc-200 dark:border-zinc-700'}`}>
-                            <div className="text-zinc-500 dark:text-zinc-400">CPU</div>
-                            <div className="font-semibold">{run.cpuInstructions.toLocaleString()}</div>
-                        </div>
-                        <div className={`rounded-lg border p-3 ${memoryWarn ? 'border-amber-300 dark:border-amber-800 bg-amber-100/70 dark:bg-amber-900/20' : 'border-zinc-200 dark:border-zinc-700'}`}>
-                            <div className="text-zinc-500 dark:text-zinc-400">Memory</div>
-                            <div className="font-semibold">{formatBytes(run.memoryBytes)}</div>
-                        </div>
-                        <div className={`rounded-lg border p-3 ${feeWarn ? 'border-amber-300 dark:border-amber-800 bg-amber-100/70 dark:bg-amber-900/20' : 'border-zinc-200 dark:border-zinc-700'}`}>
-                            <div className="text-zinc-500 dark:text-zinc-400">Min Resource Fee</div>
-                            <div className="font-semibold">{run.minResourceFee.toLocaleString()} stroops</div>
+                {run.crashDetail && (
+                    <div className="card card-padding mb-6" style={{ borderLeft: '4px solid #CC1016' }}>
+                        <h2 className="font-semibold mb-3" style={{ color: '#CC1016' }}>Crash Details</h2>
+                        <div className="space-y-2">
+                            <div><span className="text-meta">Category:</span> <span className="font-medium">{run.crashDetail.failureCategory}</span></div>
+                            <div><span className="text-meta">Signature:</span> <span className="code-text">{run.crashDetail.signature}</span></div>
+                            {run.crashDetail.signatureHash && (
+                                <div><span className="text-meta">Hash:</span> <span className="code-text">{run.crashDetail.signatureHash}</span></div>
+                            )}
                         </div>
                     </div>
-                </section>
-
-                {run.annotations && run.annotations.length > 0 && (
-                    <section className="mb-8 border border-indigo-200 dark:border-indigo-900/50 rounded-xl p-6 bg-indigo-50/30 dark:bg-indigo-950/20">
-                        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                            <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                            </svg>
-                            Run Annotations
-                        </h2>
-                        <ul className="space-y-3">
-                            {run.annotations.map((note, index) => (
-                                <li key={index} className="text-sm text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-950/60 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/40 shadow-sm leading-relaxed">
-                                    {note}
-                                </li>
-                            ))}
-                        </ul>
-                    </section>
                 )}
 
-                <section>
-                    <h2 className="text-lg font-semibold mb-3">Ledger State Change Diff</h2>
-                    <div className="space-y-3">
-                        {ledgerChanges.map((change) => (
-                            <article key={change.id} className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
-                                <div className="flex flex-wrap items-center gap-2 mb-3">
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${changeBadge[change.changeType]}`}>
-                                        {change.changeType.toUpperCase()}
-                                    </span>
-                                    <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 rounded px-2 py-0.5">
-                                        {change.entryType}
-                                    </span>
-                                    <span className="text-xs text-zinc-500 dark:text-zinc-400 font-mono">{change.id}</span>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div>
-                                        <div className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1">Before</div>
-                                        <pre className="text-xs rounded-lg bg-zinc-100 dark:bg-zinc-950 p-3 overflow-x-auto whitespace-pre-wrap break-all">
-                                            {change.before ?? 'N/A (created)'}
-                                        </pre>
-                                    </div>
-                                    <div>
-                                        <div className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1">After</div>
-                                        <pre className="text-xs rounded-lg bg-zinc-100 dark:bg-zinc-950 p-3 overflow-x-auto whitespace-pre-wrap break-all">
-                                            {change.after ?? 'N/A (deleted)'}
-                                        </pre>
+                {ledgerChanges.length > 0 && (
+                    <div className="card card-padding">
+                        <h2 className="font-semibold mb-4">Ledger State Changes</h2>
+                        <div className="space-y-3">
+                            {ledgerChanges.map((change) => (
+                                <div key={change.id} className="list-item" style={{ padding: '12px 0' }}>
+                                    <div className="flex-1">
+                                        <div className="font-medium">{change.entryType}</div>
+                                        <div className="text-meta text-xs mt-1">
+                                            {change.changeType} &middot; {change.id}
+                                            {change.before && <span> &middot; Before: {change.before}</span>}
+                                            {change.after && <span> &middot; After: {change.after}</span>}
+                                        </div>
                                     </div>
                                 </div>
-                            </article>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </section>
+                )}
             </div>
         </div>
     );

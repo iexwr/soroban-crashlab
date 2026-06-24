@@ -63,7 +63,6 @@ export default function AccessibleKeyboardNavPage() {
       // Simulate network request
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      console.log('Form submitted:', formData);
       setIsSuccess(true);
     } catch {
       setError('Form submission failed. Please try again.');

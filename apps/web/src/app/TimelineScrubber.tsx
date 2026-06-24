@@ -196,7 +196,7 @@ export default function TimelineScrubber({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-5 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-800/50 backdrop-blur-sm">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 p-3 sm:p-5 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-800/50 backdrop-blur-sm">
         <div className="space-y-1">
           <div className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Status</div>
           <div className="flex items-center gap-2">
