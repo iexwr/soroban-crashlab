@@ -542,7 +542,8 @@ function HomeContent() {
 
   const handleDashboardFiltersChange = useCallback((filters: DashboardFilters) => {
     setDashboardFilters(filters);
-  }, []);
+    setQueryState({ page: null });
+  }, [setQueryState]);
 
   const handleDashboardFiltersReset = useCallback(() => {
     setDashboardFilters({
@@ -555,7 +556,8 @@ function HomeContent() {
       hasCrash: null,
       searchTerm: '',
     });
-  }, []);
+    setQueryState({ page: null });
+  }, [setQueryState]);
 
   useEffect(() => {
     if (copyState === "idle") return;
